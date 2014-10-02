@@ -61,8 +61,7 @@ class ColorFormatter(object):
                 err = record.exc_info[1]
                 header = type(err).__name__
                 result = [self.color_map(header, record.levelname)]
-
-                if hasattr(err, 'message'):
+                if getattr(err, 'message', None):
                     result.append(str(err.message))
                 elif err.args:
                     result.append(str(err.args[0]))
