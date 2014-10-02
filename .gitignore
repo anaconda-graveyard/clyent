@@ -4,3 +4,6 @@
 .pydevproject
 *.egg-info/
 .DS_Store
+build
+dist
+record.txt

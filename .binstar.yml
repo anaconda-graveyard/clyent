@@ -1,0 +1,12 @@
+package: clyent
+
+platform:
+  - linux-64
+
+engine:
+ - python=2.7
+
+script:
+  - conda build .
+
+build_targets: [conda]
