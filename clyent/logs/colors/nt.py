@@ -5,10 +5,11 @@ from pywintypes import error as Win32Error
 
 std_output_hdl = win32console.GetStdHandle(win32console.STD_OUTPUT_HANDLE)
 
-try:
-    std_output_hdl.GetConsoleScreenBufferInfo()
-except Win32Error:  # Not a valid ConsoleScreenBuffer
-    std_output_hdl = None
+if std_output_hdl is not None:
+    try:
+        std_output_hdl.GetConsoleScreenBufferInfo()
+    except Win32Error:  # Not a valid ConsoleScreenBuffer
+        std_output_hdl = None
 
 class NTColor(object):
     YELLO = 14
