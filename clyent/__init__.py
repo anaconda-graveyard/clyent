@@ -14,6 +14,8 @@ def add_default_arguments(parser, version=None):
 
     parser.add_argument('--show-traceback', action='store_true', default=not sys.stdout.isatty(),
                         help='Show the full traceback for chalmers user errors (default: %(default)s)')
+    parser.add_argument('--hide-traceback', action='store_false', dest='show_traceback',
+                        help='Hide the full traceback for chalmers user errors')
     parser.add_argument('-v', '--verbose',
                         action='store_const', help='print debug information ot the console',
                         dest='log_level',
@@ -21,7 +23,7 @@ def add_default_arguments(parser, version=None):
     parser.add_argument('-q', '--quiet',
                         action='store_const', help='Only show warnings or errors the console',
                         dest='log_level', const=logging.WARNING)
-    parser.add_argument('--color', action='store_true', default=None,
+    parser.add_argument('--color', action='store_true', default=sys.stdout.isatty(),
                         help='always display with colors')
     parser.add_argument('--no-color', action='store_false', dest='color',
                         help='never display with colors')

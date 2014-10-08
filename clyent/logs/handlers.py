@@ -33,8 +33,11 @@ class ColorStreamHandler(logging.Handler):
         if isinstance(fmt, (list, tuple)):
             for item in fmt:
                 if isinstance(item, color):
-                    with item(stream) as text:
-                        stream.write(text)
+                    if self.use_color:
+                        with item(stream) as text:
+                            stream.write(text)
+                    else:
+                        stream.write(item.text)
                 else:
                     stream.write(item)
                 stream.write(' ')
