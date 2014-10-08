@@ -23,10 +23,6 @@ class NTColor(BaseColor):
 
     BACKGROUND_COLORS = [c << 4 for c in range(1, 10)]
 
-    def __init__(self, text, colors):
-        self.text = text
-        self.colors = colors
-
     @classmethod
     def set_colors(cls, stream, colors):
         c = reduce(lambda a, b: a | b, colors)
