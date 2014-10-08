@@ -1,7 +1,7 @@
-from contextlib import contextmanager
-
-import win32console
+from clyent.logs.colors.base import BaseColor
 from pywintypes import error as Win32Error
+import win32console
+
 
 std_output_hdl = win32console.GetStdHandle(win32console.STD_OUTPUT_HANDLE)
 
@@ -11,7 +11,7 @@ if std_output_hdl is not None:
     except Win32Error:  # Not a valid ConsoleScreenBuffer
         std_output_hdl = None
 
-class NTColor(object):
+class NTColor(BaseColor):
     YELLO = 14
     BLUE = 11
     GREEN = 10
@@ -27,14 +27,9 @@ class NTColor(object):
         self.text = text
         self.colors = colors
 
-    @contextmanager
-    def __call__(self, stream):
-        c = reduce(lambda a, b: a | b, self.colors)
+    @classmethod
+    def set_colors(cls, stream, colors):
+        c = reduce(lambda a, b: a | b, colors)
         if std_output_hdl is not None:
             std_output_hdl.SetConsoleTextAttribute(c)
-        try:
-            yield self.text
-        finally:
-            if std_output_hdl is not None:
-                std_output_hdl.SetConsoleTextAttribute(self.DEFAULT)
 

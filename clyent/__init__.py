@@ -7,6 +7,8 @@ from os.path import dirname
 import pkgutil
 
 from clyent.errors import ShowHelp
+from clyent.logs.colors import color
+from clyent.logs.colors.printer import print_colors
 import sys
 
 

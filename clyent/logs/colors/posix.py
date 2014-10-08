@@ -1,7 +1,6 @@
-from contextlib import contextmanager
+from clyent.logs.colors.base import BaseColor
 
-
-class PosixColor(object):
+class PosixColor(BaseColor):
     WHITE = 97
     YELLO = 93
     BLUE = 94
@@ -11,18 +10,13 @@ class PosixColor(object):
 
     DEFAULT = 0
 
+    UNDERLINE = 4
+
     BACKGROUND_COLORS = range(40, 48) + [100, 102, 104, 105, 106]
 
-    def __init__(self, text, colors):
-        self.text = text
-        self.colors = colors
-
-    @contextmanager
-    def __call__(self, stream):
-        for c in self.colors:
+    @classmethod
+    def set_colors(cls, stream, colors):
+        col = list(colors)
+        for c in col:
             stream.write('\033[%im' % c)
-        try:
-            yield self.text
-        finally:
-            stream.write('\033[%im' % self.DEFAULT)
 
