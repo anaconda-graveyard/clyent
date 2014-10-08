@@ -7,11 +7,13 @@ from os.path import dirname
 import pkgutil
 
 from clyent.errors import ShowHelp
+import sys
 
 
 def add_default_arguments(parser, version=None):
 
-    parser.add_argument('--show-traceback', action='store_true')
+    parser.add_argument('--show-traceback', action='store_true', default=not sys.stdout.isatty(),
+                        help='Show the full traceback for chalmers user errors (default: %(default)s)')
     parser.add_argument('-v', '--verbose',
                         action='store_const', help='print debug information ot the console',
                         dest='log_level',
