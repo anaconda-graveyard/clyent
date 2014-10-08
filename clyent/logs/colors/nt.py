@@ -1,9 +1,14 @@
 from clyent.logs.colors.base import BaseColor
-from pywintypes import error as Win32Error
-import win32console
 
+try:
+    from pywintypes import error as Win32Error
+    import win32console
+except ImportError:
+    std_output_hdl = None
+else:
+    # std_output_hdl will be none if this is a service process
+    std_output_hdl = win32console.GetStdHandle(win32console.STD_OUTPUT_HANDLE)
 
-std_output_hdl = win32console.GetStdHandle(win32console.STD_OUTPUT_HANDLE)
 
 if std_output_hdl is not None:
     try:
@@ -25,7 +30,7 @@ class NTColor(BaseColor):
 
     @classmethod
     def set_colors(cls, stream, colors):
-        c = reduce(lambda a, b: a | b, colors)
         if std_output_hdl is not None:
+            c = reduce(lambda a, b: a | b, colors)
             std_output_hdl.SetConsoleTextAttribute(c)
 
