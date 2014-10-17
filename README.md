@@ -76,19 +76,30 @@ This is
 >>> print_colors('Hey! {=This is an inline \nmessage!c:red,bold,underline} ...')
 ```
 
-<span class="success">Hey! This is an inline 
-message</span>
-
-<p style="color:red;">make something red</p>
+Hey! This is an inline <br>
+message
 
 ```py
 >>> print_colors('This is a format substitution {ok!c:green,bold} '
                  'Because the value contains unescaped characters', ok='{OK!}')
+```
+
+This is a format substitution OK! Because the value contains unescaped characters
+
+```py
 
 >>> with color.blue:
         print('This is a message within a color context')
+```
+
+This is a message within a color context
+
+```py
 
 >>> print_colors(color.underline('hello'),
                  'is euqal to',
                  '{=hello!c:underline}')
+
 ```
+
+hello is equal to hello
