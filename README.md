@@ -79,6 +79,8 @@ This is
 <span class="success">Hey! This is an inline 
 message</span>
 
+<p style="color:red;">make something red</p>
+
 ```py
 >>> print_colors('This is a format substitution {ok!c:green,bold} '
                  'Because the value contains unescaped characters', ok='{OK!}')
