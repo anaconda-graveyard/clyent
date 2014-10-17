@@ -73,8 +73,13 @@ This is
 
 ```py
 
->>> print_colors('A {=This is an inline \nmessage!c:red,bold,underline} ...')
+>>> print_colors('Hey! {=This is an inline \nmessage!c:red,bold,underline} ...')
+```
 
+<span class="success">Hey! This is an inline 
+message</span>
+
+```py
 >>> print_colors('This is a format substitution {ok!c:green,bold} '
                  'Because the value contains unescaped characters', ok='{OK!}')
 
