@@ -71,4 +71,17 @@ This is
 
 # print with color on posix and win32
 
+```py
 
+>>> print_colors('A {=This is an inline \nmessage!c:red,bold,underline} ...')
+
+>>> print_colors('This is a format substitution {ok!c:green,bold} '
+                 'Because the value contains unescaped characters', ok='{OK!}')
+
+>>> with color.blue:
+        print('This is a message within a color context')
+
+>>> print_colors(color.underline('hello'),
+                 'is euqal to',
+                 '{=hello!c:underline}')
+```
