@@ -12,7 +12,7 @@ class PosixColor(BaseColor):
 
     UNDERLINE = 4
 
-    BACKGROUND_COLORS = range(40, 48) + [100, 102, 104, 105, 106]
+    BACKGROUND_COLORS = list(range(40, 48)) + [100, 102, 104, 105, 106]
 
     @classmethod
     def set_colors(cls, stream, colors):

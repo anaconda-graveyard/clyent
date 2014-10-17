@@ -8,5 +8,6 @@ setup(
     url='http://github.com/binstar/clyent',
     description='Command line client Library for windwos and posix',
     packages=find_packages(),
+    license="BSD",
 )
 

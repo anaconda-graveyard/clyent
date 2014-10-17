@@ -95,7 +95,7 @@ if __name__ == '__main__':
                  'Because the value contains unescaped characters', ok='{OK!}')
 
     with color.blue:
-        print 'This is a message within a color context'
+        print('This is a message within a color context')
 
     print_colors(color.underline('hello'),
                  'is euqal to',
