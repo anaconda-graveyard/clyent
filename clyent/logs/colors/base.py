@@ -28,6 +28,10 @@ class color_creator(type):
         else:
             raise AttributeError(attr)
 
+try:
+    basestring
+except NameError:
+    basestring = (str, bytes)
 
 class BaseColor(object):
     __metaclass__ = color_creator
@@ -73,3 +77,8 @@ class BaseColor(object):
                 elif hasattr(cls, c.upper()):
                     yield getattr(cls, c.upper())
 
+import sys
+py3 = sys.version_info.major == 3
+if py3:
+    # Metaclass hack
+    BaseColor = color_creator('BaseColor', (BaseColor,), {})
