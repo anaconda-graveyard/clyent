@@ -10,25 +10,84 @@ from clyent.errors import ShowHelp
 from clyent.logs.colors import color
 from clyent.logs.colors.printer import print_colors
 import sys
+import argparse
+import json
+from collections import OrderedDict
 
+def json_action(action):
+    a_data = dict(action._get_kwargs())
+
+    if a_data.get('help'):
+        a_data['help'] = a_data['help'] % a_data
+
+    if isinstance(action , argparse._SubParsersAction):
+        a_data.pop('choices', None)
+        choices = {}
+        for choice in action._get_subactions():
+            choices[choice.dest] = choice.help
+        a_data['choices'] = choices
+
+    reg = {v:k for k, v in action.container._registries['action'].items()}
+    a_data['action'] = reg.get(type(action), type(action).__name__)
+    if a_data['action'] == 'store' and not a_data.get('metavar'):
+        a_data['metavar'] = action.dest.upper()
+
+    a_data.pop('type', None)
+    a_data.pop('default', None)
+
+    return a_data
+
+def json_group(group):
+    grp_data = {'description': group.description,
+                'title': group.title,
+                'actions': [json_action(a) for a in group._group_actions if a.help != argparse.SUPPRESS],
+                }
+
+    if group._action_groups:
+        grp_data['groups'] = [json_group(g) for g in group._action_groups]
+
+    return grp_data
+
+class json_help(argparse.Action):
+    def __init__(self, nargs=0, help=argparse.SUPPRESS, **kwargs):
+        argparse.Action.__init__(self, nargs=nargs, help=help, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string):
+        self.nargs = 0
+        docs = {'prog': parser.prog,
+                'usage': parser.format_usage()[7:],
+                'description': parser.description,
+                'epilog': parser.epilog,
+               }
+
+        docs['groups'] = []
+        for group in parser._action_groups:
+            if group._group_actions:
+                docs['groups'].append(json_group(group))
+
+        json.dump(docs, sys.stdout, indent=2)
+        raise SystemExit(0)
 
 def add_default_arguments(parser, version=None):
 
-    parser.add_argument('--show-traceback', action='store_true', default=not sys.stdout.isatty(),
+    ogroup = parser.add_argument_group('output')
+    ogroup.add_argument('--show-traceback', action='store_true', default=not sys.stdout.isatty(),
                         help='Show the full traceback for chalmers user errors (default: %(default)s)')
-    parser.add_argument('--hide-traceback', action='store_false', dest='show_traceback',
+    ogroup.add_argument('--hide-traceback', action='store_false', dest='show_traceback',
                         help='Hide the full traceback for chalmers user errors')
-    parser.add_argument('-v', '--verbose',
+    ogroup.add_argument('-v', '--verbose',
                         action='store_const', help='print debug information ot the console',
                         dest='log_level',
                         default=logging.INFO, const=logging.DEBUG)
-    parser.add_argument('-q', '--quiet',
+    ogroup.add_argument('-q', '--quiet',
                         action='store_const', help='Only show warnings or errors the console',
                         dest='log_level', const=logging.WARNING)
-    parser.add_argument('--color', action='store_true', default=sys.stdout.isatty(),
+    ogroup.add_argument('--color', action='store_true', default=sys.stdout.isatty(),
                         help='always display with colors')
-    parser.add_argument('--no-color', action='store_false', dest='color',
+    ogroup.add_argument('--no-color', action='store_false', dest='color',
                         help='never display with colors')
+
+    parser.add_argument('--json-help', action=json_help)
 
     if version:
         parser.add_argument('-V', '--version', action='version',
@@ -51,13 +110,14 @@ def get_sub_commands(module):
 
 def add_subparser_modules(parser, module):
 
-    subparsers = parser.add_subparsers(help='commands')
+    subparsers = parser.add_subparsers(help='Sub Commands')
 
     for command_module in get_sub_commands(module):
         command_module.add_parser(subparsers)
 
     for key, sub_parser in subparsers.choices.items():
         sub_parser.set_defaults(sub_command_name=key)
+        sub_parser.add_argument('--json-help', action=json_help)
 
 def run_command(args, exit=True):
 
