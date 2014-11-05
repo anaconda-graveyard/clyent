@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='clyent',
-    version="0.3.0",
+    version="0.3.2",
     author='Continuum Analytics',
     author_email='srossross@gmail.com',
     url='http://github.com/binstar/clyent',
