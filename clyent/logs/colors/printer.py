@@ -1,12 +1,15 @@
 from __future__ import unicode_literals
 
 import string
+import sys
+
 from clyent.logs.colors import color
+
 
 class ColorFormatStream(string.Formatter):
 
     def __init__(self, stream):
-        self.stream = stream
+        self.stream = stream or sys.stdout
 
     def convert_field(self, value, conversion):
         if conversion == 'c':
@@ -69,7 +72,8 @@ def print_colors(text='', *args, **kwargs):
     print_colors(value, ..., sep=' ', end='\n', file=sys.stdout)
     '''
 
-    stream = kwargs.pop('stream', color.DEFAULT_STREAM)
+    stream = kwargs.pop('stream', color.DEFAULT_STREAM) or sys.stdout
+
     end = kwargs.pop('end', '\n')
     sep = kwargs.pop('sep', ' ')
     fmt = ColorFormatStream(stream)

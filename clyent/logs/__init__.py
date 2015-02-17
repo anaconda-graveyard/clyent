@@ -21,7 +21,6 @@ def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False):
 
     cli_logger = logging.getLogger('cli-logger')
     cli_logger.setLevel(logging.ERROR)
-
     if logfile:
         if not exists(dirname(logfile)): makedirs(dirname(logfile))
         hndlr = RotatingFileHandler(logfile, maxBytes=10 * (1024 ** 2), backupCount=5,)
