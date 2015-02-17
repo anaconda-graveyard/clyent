@@ -36,7 +36,7 @@ except NameError:
 class BaseColor(object):
     __metaclass__ = color_creator
 
-    DEFAULT_STREAM = sys.stdout
+    DEFAULT_STREAM = None
 
     def __init__(self, text, colors=()):
         self.text = text

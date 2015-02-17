@@ -110,7 +110,7 @@ def get_sub_commands(module):
 
 def add_subparser_modules(parser, module):
 
-    subparsers = parser.add_subparsers(help='Sub Commands')
+    subparsers = parser.add_subparsers(help='Sub Commands', title='Commands', metavar='COMMAND')
 
     for command_module in get_sub_commands(module):
         command_module.add_parser(subparsers)
