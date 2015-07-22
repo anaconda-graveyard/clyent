@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
+import versioneer
 
 setup(
     name='clyent',
-    version="0.3.4",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     author='Continuum Analytics',
     author_email='srossross@gmail.com',
     url='http://github.com/binstar/clyent',

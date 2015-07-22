@@ -139,3 +139,7 @@ def run_command(args, exit=True):
             raise SystemExit(1)
         else:
             return 1
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
