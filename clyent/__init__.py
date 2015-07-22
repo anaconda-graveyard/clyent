@@ -13,6 +13,7 @@ import sys
 import argparse
 import json
 from collections import OrderedDict
+from pkg_resources import iter_entry_points
 
 def json_action(action):
     a_data = dict(action._get_kwargs())
@@ -108,12 +109,18 @@ def get_sub_commands(module):
         yield getattr(this_module, name)
 
 
-def add_subparser_modules(parser, module):
+def add_subparser_modules(parser, module=None, entry_point_name=None):
 
     subparsers = parser.add_subparsers(help='Sub Commands', title='Commands', metavar='COMMAND')
 
-    for command_module in get_sub_commands(module):
-        command_module.add_parser(subparsers)
+    if module:  # LOAD sub parsers from module
+        for command_module in get_sub_commands(module):
+            command_module.add_parser(subparsers)
+
+    if entry_point_name:  # LOAD sub parsers from setup.py entry_point
+        for entry_point in iter_entry_points(entry_point_name):
+            add_parser = entry_point.load()
+            add_parser(subparsers)
 
     for key, sub_parser in subparsers.choices.items():
         sub_parser.set_defaults(sub_command_name=key)
