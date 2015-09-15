@@ -12,10 +12,12 @@ COLOR_MAP = {logging.ERROR: 'red',
 
 class ColorStreamHandler(logging.Handler):
 
-    def __init__(self, level=logging.INFO, hide_tb=None):
+    def __init__(self, level=logging.INFO, show_tb='tty', exceptions=None):
+        self.show_tb = show_tb
+        self.exceptions = exceptions
+
         logging.Handler.__init__(self, level=level)
 
-        self.hide_tb = hide_tb
 
     def emit(self, record):
 
@@ -31,7 +33,10 @@ class ColorStreamHandler(logging.Handler):
 
         color = colors.Color(COLOR_MAP.get(record.levelno), file=stream)
 
-        if record.exc_info and self.hide_tb and isinstance(record.exc_info[1], self.hide_tb):
+        is_hidable = record.exc_info and isinstance(record.exc_info[1], self.exceptions)
+        should_hide = True if self.show_tb == 'never' else False if self.show_tb == 'always' else stream.isatty()
+
+        if is_hidable and should_hide:
             err = record.exc_info[1]
             msg = str(err)
             with color:

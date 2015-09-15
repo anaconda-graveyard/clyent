@@ -73,9 +73,9 @@ class json_help(argparse.Action):
 def add_default_arguments(parser, version=None):
 
     ogroup = parser.add_argument_group('output')
-    ogroup.add_argument('--show-traceback', action='store_true', default=not sys.stdout.isatty(),
+    ogroup.add_argument('--show-traceback', action='store_const', const='always', default='tty',
                         help='Show the full traceback for chalmers user errors (default: %(default)s)')
-    ogroup.add_argument('--hide-traceback', action='store_false', dest='show_traceback',
+    ogroup.add_argument('--hide-traceback', action='store_const', const='never', dest='show_traceback',
                         help='Hide the full traceback for chalmers user errors')
     ogroup.add_argument('-v', '--verbose',
                         action='store_const', help='print debug information ot the console',
@@ -114,7 +114,7 @@ def get_sub_commands(module):
 
 def add_subparser_modules(parser, module=None, entry_point_name=None):
 
-    subparsers = parser.add_subparsers(help='Sub Commands', title='Commands', metavar='COMMAND')
+    subparsers = parser.add_subparsers(title='Commands', metavar='')
 
     if module:  # LOAD sub parsers from module
         for command_module in get_sub_commands(module):

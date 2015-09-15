@@ -37,8 +37,8 @@ def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False):
 
         cli_logger.addHandler(hndlr)
 
-    hide_tb = False if show_tb else (errors.ClyentError, KeyboardInterrupt)
-    shndlr = ColorStreamHandler(hide_tb=hide_tb)
+    exceptions = (errors.ClyentError, KeyboardInterrupt)
+    shndlr = ColorStreamHandler(show_tb=show_tb, exceptions=exceptions)
     shndlr.setLevel(level)
     logger.addHandler(shndlr)
 

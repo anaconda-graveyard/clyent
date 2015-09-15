@@ -33,6 +33,8 @@ class ColorStream(object):
     def flush(self):
         self.stream.flush()
 
+    def isatty(self):
+        return self.stream.isatty()
 
     def set_color(self, color_id):
 
