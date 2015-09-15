@@ -1,10 +1,10 @@
-from __future__ import unicode_literals
-
 import string
 import sys
+from .color import Color
 
-from clyent.logs.colors import color
-
+class colored_text(object):
+    def __init__(self, text):
+        self.text = text
 
 class ColorFormatStream(string.Formatter):
 
@@ -13,15 +13,15 @@ class ColorFormatStream(string.Formatter):
 
     def convert_field(self, value, conversion):
         if conversion == 'c':
-            return color(value)
+            return colored_text(value)
+
         rv = string.Formatter.convert_field(self, value, conversion)
         return rv
 
     def format_field(self, value, format_spec):
-        if isinstance(value , color):
-            colors = color.mkcolor(format_spec)
-            with value(self.stream, colors) as text:
-                self.stream.write(text)
+        if isinstance(value , colored_text):
+            with Color(format_spec):
+                self.stream.write(value.text)
             return
         else:
             rv = string.Formatter.format_field(self, value, format_spec)
@@ -72,14 +72,14 @@ def print_colors(text='', *args, **kwargs):
     print_colors(value, ..., sep=' ', end='\n', file=sys.stdout)
     '''
 
-    stream = kwargs.pop('stream', color.DEFAULT_STREAM) or sys.stdout
+    stream = kwargs.pop('file', sys.stdout)
 
     end = kwargs.pop('end', '\n')
     sep = kwargs.pop('sep', ' ')
     fmt = ColorFormatStream(stream)
 
     def write_item(item):
-        if isinstance(item, color):
+        if isinstance(item, Color):
             with item(stream) as text:
                 stream.write(text)
         else:
@@ -87,22 +87,10 @@ def print_colors(text='', *args, **kwargs):
 
     if text:
         write_item(text)
+
     for text in args:
         stream.write(sep)
         write_item(text)
 
     stream.write(end)
 
-if __name__ == '__main__':
-
-    print_colors('A {=This is an inline \nmessage!c:red,bold,underline} ...')
-
-    print_colors('This is a format substitution {ok!c:green,bold} '
-                 'Because the value contains unescaped characters', ok='{OK!}')
-
-    with color.blue:
-        print('This is a message within a color context')
-
-    print_colors(color.underline('hello'),
-                 'is euqal to',
-                 '{=hello!c:underline}')

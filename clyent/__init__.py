@@ -1,19 +1,20 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+import argparse
+from collections import OrderedDict
 import imp
+import json
 import logging
 import os
 from os.path import dirname
 import pkgutil
+import sys
 
 from clyent.errors import ShowHelp
-from clyent.logs.colors import color
-from clyent.logs.colors.printer import print_colors
-import sys
-import argparse
-import json
-from collections import OrderedDict
 from pkg_resources import iter_entry_points
+
+from ._version import get_versions
+
 
 def json_action(action):
     a_data = dict(action._get_kwargs())
@@ -83,9 +84,11 @@ def add_default_arguments(parser, version=None):
     ogroup.add_argument('-q', '--quiet',
                         action='store_const', help='Only show warnings or errors the console',
                         dest='log_level', const=logging.WARNING)
-    ogroup.add_argument('--color', action='store_true', default=sys.stdout.isatty(),
+    ogroup.add_argument('--color', action='store_const',
+                        default='tty', const='always',
                         help='always display with colors')
-    ogroup.add_argument('--no-color', action='store_false', dest='color',
+    ogroup.add_argument('--no-color', action='store_const', dest='color',
+                        const='never',
                         help='never display with colors')
 
     parser.add_argument('--json-help', action=json_help)
@@ -140,6 +143,5 @@ def run_command(args, exit=True):
         else:
             return 1
 
-from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions

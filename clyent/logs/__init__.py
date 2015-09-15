@@ -1,9 +1,12 @@
 from __future__ import print_function, absolute_import, unicode_literals
+
 import logging
 from logging.handlers import RotatingFileHandler
 from os import makedirs
 from os.path import join, exists, dirname
 import sys
+
+from clyent import errors, colors
 
 from .handlers import ColorStreamHandler
 
@@ -16,6 +19,8 @@ def log_unhandled_exception(logger):
     return excepthook
 
 def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False):
+
+    colors.initialize_colors()
 
     logger.setLevel(logging.DEBUG)
 
@@ -32,7 +37,8 @@ def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False):
 
         cli_logger.addHandler(hndlr)
 
-    shndlr = ColorStreamHandler(use_color=use_color, show_tb=show_tb)
+    hide_tb = False if show_tb else (errors.ClyentError, KeyboardInterrupt)
+    shndlr = ColorStreamHandler(hide_tb=hide_tb)
     shndlr.setLevel(level)
     logger.addHandler(shndlr)
 
