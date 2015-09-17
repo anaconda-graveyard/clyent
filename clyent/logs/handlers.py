@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import logging
 import sys
 
-from clyent import colors
+from clyent import colors, errors
 
 
 COLOR_MAP = {logging.ERROR: 'red',
@@ -12,7 +12,7 @@ COLOR_MAP = {logging.ERROR: 'red',
 
 class ColorStreamHandler(logging.Handler):
 
-    def __init__(self, level=logging.INFO, show_tb='tty', exceptions=None):
+    def __init__(self, level=logging.INFO, show_tb='tty', exceptions=(errors.ClyentError,)):
         self.show_tb = show_tb
         self.exceptions = exceptions
 
@@ -59,7 +59,7 @@ def main():
     colors.initialize_colors()
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
-    h = ColorStreamHandler(logging.DEBUG, hide_tb=Exception)
+    h = ColorStreamHandler(logging.DEBUG, show_tb=False)
     logger.addHandler(h)
 
     logger.debug("DEBUG")
@@ -71,7 +71,14 @@ def main():
     try:
         asdf
     except:
-        logger.exception(None)
+        logger.exception("Show this tb")
+
+    try:
+        raise errors.ClyentError("This will be a short message")
+    except:
+        logger.exception("This wil not be displayed")
+
+
 
 if __name__ == '__main__':
     main()
