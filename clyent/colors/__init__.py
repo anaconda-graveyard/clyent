@@ -48,7 +48,9 @@ class ColorStream(object):
     def isatty(self):
         return self.stream.isatty()
 
-    
+    def fileno(self):
+        return self.stream.fileno()
+
     def set_color(self, color_id):
 
 
@@ -68,7 +70,7 @@ class ColorStream(object):
 
 def test():
     initialize_colors()
-    
+
 
     with Color('red'):
         print("This is red")

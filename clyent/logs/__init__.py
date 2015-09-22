@@ -6,7 +6,8 @@ from os import makedirs
 from os.path import join, exists, dirname
 import sys
 
-from clyent import errors, colors
+from clyent import errors
+from clyent.colors import initialize_colors
 
 from .handlers import ColorStreamHandler
 
@@ -19,8 +20,7 @@ def log_unhandled_exception(logger):
     return excepthook
 
 def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False):
-
-    colors.initialize_colors()
+    initialize_colors()
 
     logger.setLevel(logging.DEBUG)
 

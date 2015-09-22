@@ -2,19 +2,25 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import argparse
 from collections import OrderedDict
+from contextlib import contextmanager
 import imp
 import json
 import logging
 import os
 from os.path import dirname
+from pkg_resources import iter_entry_points
 import pkgutil
 import sys
 
 from clyent.errors import ShowHelp
-from pkg_resources import iter_entry_points
 
 from ._version import get_versions
+from .colors import print_colors
 
+
+@contextmanager
+def color(text, color_list=()):
+    yield
 
 def json_action(action):
     a_data = dict(action._get_kwargs())
