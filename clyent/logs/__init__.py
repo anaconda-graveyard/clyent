@@ -20,7 +20,7 @@ def log_unhandled_exception(logger):
     return excepthook
 
 def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False):
-    initialize_colors()
+    initialize_colors(use_color)
 
     logger.setLevel(logging.DEBUG)
 
