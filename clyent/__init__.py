@@ -97,6 +97,8 @@ def add_default_arguments(parser, version=None):
                         const='never',
                         help='never display with colors')
     parser.add_argument('--json-help', action=json_help)
+    parser.add_argument('--json-output', action="store_true",
+                        help="Log all output as json.")
 
     if version:
         parser.add_argument('-V', '--version', action='version',
