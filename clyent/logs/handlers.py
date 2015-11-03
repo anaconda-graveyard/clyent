@@ -1,5 +1,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+from functools import partial
+import json
 import logging
 import sys
 
@@ -52,6 +54,19 @@ class ColorStreamHandler(logging.Handler):
                     print('[%s] ' % header, file=stream, end='')
 
             print(msg, file=stream)
+
+
+class JsonStreamHandler(logging.Handler):
+
+    def emit(self, record):
+        message = record.msg.format(*record.args)
+        message_dict = {
+                         'message': message,
+                         'args': list(record.args),
+                       }
+        message_dict['metadata'] =  getattr(record, 'metadata', {})
+        json_message = json.dumps(message_dict)
+        sys.stdout.write(json_message + '\n')
 
 
 def main():
