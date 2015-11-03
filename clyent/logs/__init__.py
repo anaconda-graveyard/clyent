@@ -9,7 +9,7 @@ import sys
 from clyent import errors
 from clyent.colors import initialize_colors
 
-from .handlers import ColorStreamHandler, JsonStreamHandler
+from .handlers import ColorStreamHandler, JsonStreamAdapter
 
 
 def log_unhandled_exception(logger):
@@ -38,10 +38,9 @@ def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False, as
         cli_logger.addHandler(hndlr)
 
     exceptions = (errors.ClyentError, KeyboardInterrupt)
-    if not as_json:
-        shndlr = ColorStreamHandler(show_tb=show_tb, exceptions=exceptions)
-    else:
-        shndlr = JsonStreamHandler()
+    shndlr = ColorStreamHandler(show_tb=show_tb, exceptions=exceptions)
+    if as_json:
+        shndlr = JsonStreamAdapter(shndlr)
     shndlr.setLevel(level)
     logger.addHandler(shndlr)
 

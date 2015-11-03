@@ -57,20 +57,14 @@ class ColorStreamHandler(logging.Handler):
 
             print(msg, file=stream)
 
-class JsonStreamHandler(logging.Handler):
-    exceptions = (errors.ClyentError,)
-    def emit(self, record):
-        message = record.msg.format(*record.args)
-        message_dict = {
-                         'message': message,
-                         'args': list(record.args),
-                       }
-        message_dict['metadata'] =  getattr(record, 'metadata', {})
-        if record.exc_info and isinstance(record.exc_info[1], self.exceptions):
-            message_dict['traceback'] = traceback.format_exc()
-        json_message = json.dumps(message_dict)
-        sys.stdout.write(json_message + '\n')
 
+class JsonStreamAdapter(logging.Adapter):
+    def process(self, msg, *args, **kwargs):
+        msg = msg.format(args)
+        js = json.dumps({'message': msg,
+                           'args': list(args),
+                           'metadata': kwargs})
+        return js, kwargs
 
 def main():
 

@@ -96,9 +96,6 @@ def add_default_arguments(parser, version=None):
     ogroup.add_argument('--no-color', action='store_const', dest='color',
                         const='never',
                         help='never display with colors')
-    ogroup.add_argument('-j', '--json',
-                        help='Output as json.',
-                        action="store_true")
     parser.add_argument('--json-help', action=json_help)
 
     if version:
