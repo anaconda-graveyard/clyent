@@ -2,8 +2,10 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from functools import partial
 import json
+from inspect import getargspec
 import logging
 import sys
+import traceback
 
 from clyent import colors, errors
 
@@ -55,9 +57,8 @@ class ColorStreamHandler(logging.Handler):
 
             print(msg, file=stream)
 
-
 class JsonStreamHandler(logging.Handler):
-
+    exceptions = (errors.ClyentError,)
     def emit(self, record):
         message = record.msg.format(*record.args)
         message_dict = {
@@ -65,6 +66,8 @@ class JsonStreamHandler(logging.Handler):
                          'args': list(record.args),
                        }
         message_dict['metadata'] =  getattr(record, 'metadata', {})
+        if record.exc_info and isinstance(record.exc_info[1], self.exceptions):
+            message_dict['traceback'] = traceback.format_exc()
         json_message = json.dumps(message_dict)
         sys.stdout.write(json_message + '\n')
 
