@@ -73,6 +73,25 @@ class JsonStreamHandler(logging.Handler):
         sys.stdout.write(json_message + '\n')
 
 
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        if getattr(record, 'exc_info', False):
+            return self.formatException(record.exc_info)
+        return json.dumps({
+                            'message': record.msg.format(*record.args),
+                            'metadata': getattr(record, 'metadata', {}),
+                            'args': list(record.args),
+                         #   'record': repr(record.__dict__),
+                        })
+    def formatException(self, exc_info):
+        """
+        Format an exception so that it prints on a single line.
+        """
+        result = super(JsonFormatter, self).formatException(exc_info)
+        return json.dumps({'error': repr(result),})
+
+
+
 def main():
 
     colors.initialize_colors()

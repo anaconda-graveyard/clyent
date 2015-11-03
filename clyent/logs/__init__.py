@@ -9,7 +9,7 @@ import sys
 from clyent import errors
 from clyent.colors import initialize_colors
 
-from .handlers import ColorStreamHandler, JsonStreamHandler
+from .handlers import ColorStreamHandler, JsonFormatter
 
 
 def log_unhandled_exception(logger):
@@ -26,11 +26,15 @@ def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False, as
 
     cli_logger = logging.getLogger('cli-logger')
     cli_logger.setLevel(logging.ERROR)
+    if as_json:
+        fmt = JsonFormatter()
+    else:
+        fmt = logging.Formatter("[%(asctime)s] %(message)s")
+
     if logfile:
         if not exists(dirname(logfile)): makedirs(dirname(logfile))
         hndlr = RotatingFileHandler(logfile, maxBytes=10 * (1024 ** 2), backupCount=5,)
         hndlr.setLevel(logging.ERROR)
-        fmt = logging.Formatter("[%(asctime)s] %(message)s")
         hndlr.setFormatter(fmt)
 
         logger.addHandler(hndlr)
@@ -41,11 +45,10 @@ def setup_logging(logger, level, use_color=None, logfile=None, show_tb=False, as
     if not as_json:
         shndlr = ColorStreamHandler(show_tb=show_tb, exceptions=exceptions)
     else:
-        shndlr = JsonStreamHandler()
+        shndlr = logging.StreamHandler(stream=sys.stdout)
+        shndlr.setFormatter(fmt)
     shndlr.setLevel(level)
     logger.addHandler(shndlr)
-    #if as_json:
-     #   logger = JsonStreamAdapter(logger,{})
 
     sys.excepthook = log_unhandled_exception(logger)
 
