@@ -67,6 +67,21 @@ class ColorStream(object):
         self.current_color_id = color_id
         return last_color_id
 
+    @property
+    def errors(self):
+        return self.stream.errors
+
+    @errors.setter
+    def errors(self, val):
+        self.stream.errors = val
+
+    @property
+    def encoding(self):
+        return self.stream.encoding
+
+    @encoding.setter
+    def encoding(self, val):
+        self.stream.encoding = val
 
 def test():
     initialize_colors()
