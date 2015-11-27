@@ -1,3 +1,4 @@
+from __future__ import unicode_literals, print_function
 import string
 import sys
 from .color import Color
