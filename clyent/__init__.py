@@ -2,7 +2,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import argparse
 from collections import OrderedDict
-from contextlib import contextmanager
 import imp
 import json
 import logging
@@ -17,10 +16,15 @@ from clyent.errors import ShowHelp
 from ._version import get_versions
 from .colors import print_colors
 
+class color(object):
+    def __init__(self, text, color_list=()):
+        pass
 
-@contextmanager
-def color(text, color_list=()):
-    yield
+    def __enter__(self):
+        pass
+
+    def __exit__(self, err, type_, tb):
+        pass
 
 def json_action(action):
     a_data = dict(action._get_kwargs())
