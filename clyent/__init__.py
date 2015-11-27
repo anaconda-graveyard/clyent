@@ -18,7 +18,7 @@ from .colors import print_colors
 
 class color(object):
     """
-    Depricated: please use  clyent.colors.Color instead
+    Deprecated: please use clyent.colors.Color instead
     """
     def __init__(self, text, color_list=()):
         pass
