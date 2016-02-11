@@ -52,6 +52,8 @@ class ColorStreamHandler(logging.Handler):
                     print('[%s] ' % header, file=stream, end='')
 
             print(msg, file=stream)
+            
+        stream.flush()
 
 
 def main():
