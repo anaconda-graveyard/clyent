@@ -52,8 +52,6 @@ class ColorStream(object):
         return self.stream.fileno()
 
     def set_color(self, color_id):
-
-
         last_color_id = self.current_color_id
         if os.name == 'nt':
             if self.win32_hdl:

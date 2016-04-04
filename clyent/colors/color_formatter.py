@@ -21,7 +21,7 @@ class ColorFormatStream(string.Formatter):
 
     def format_field(self, value, format_spec):
         if isinstance(value , colored_text):
-            with Color(format_spec):
+            with Color(format_spec, self.stream):
                 self.stream.write(value.text)
             return
         else:
