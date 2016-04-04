@@ -13,6 +13,7 @@ script:
   - conda build conda.recipe
 
 test:
+  - pip install -r dev-requirements.txt
   - python -m unittest discover
 
 build_targets: [conda]
