@@ -12,4 +12,7 @@ engine:
 script:
   - conda build conda.recipe
 
+test:
+  - python -m unittest discover
+
 build_targets: [conda]
