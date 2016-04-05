@@ -4,6 +4,7 @@ try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
+import os
 import sys
 import unittest
 
@@ -33,7 +34,7 @@ class Test(unittest.TestCase):
         args = parser.parse_args(['hello', 'world'])
         self.assertEqual(args.world, 'world')
 
-    @unittest.skipIf(sys.platform == 'nt', 'Cannot colorize StringIO on Windows')
+    @unittest.skipIf(os.name == 'nt', 'Cannot colorize StringIO on Windows')
     def test_color_format(self):
         output = StringIO()
         output.fileno = lambda: -1
@@ -46,7 +47,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual('Are you \033[92mokay\033[0m Annie?\n', value)
 
-    @unittest.skipIf(sys.platform == 'nt', 'Cannot colorize StringIO on Windows')
+    @unittest.skipIf(os.name == 'nt', 'Cannot colorize StringIO on Windows')
     def test_color_context(self):
         output = StringIO()
         output.fileno = lambda: -1
