@@ -2,6 +2,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import argparse
 from collections import OrderedDict
+import functools
 import imp
 import json
 import logging
@@ -10,6 +11,8 @@ from os.path import dirname
 from pkg_resources import iter_entry_points
 import pkgutil
 import sys
+
+import click
 
 from clyent.errors import ShowHelp
 
@@ -29,6 +32,38 @@ class color(object):
     def __exit__(self, err, type_, tb):
         pass
 
+def click_parser(*args, **kwargs):
+    if 'click_command' in kwargs:
+        return ClickParser(*args, **kwargs)
+    else:
+        return argparse.ArgumentParser(*args, **kwargs)
+
+class ClickParser(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        self.click_command = kwargs.pop('click_command')
+        argparse.ArgumentParser.__init__(self, **kwargs)
+
+    def parse_known_args(self, args=None, namespace=None):
+        try:
+            ctx = self.click_command.make_context(self.prog, args, help_option_names=['-h', '--help'])
+        except click.UsageError as usage:
+            usage.show()
+            self.exit(2)
+
+        # Set the function to execute as "main"
+        main = functools.partial(self.invoke, ctx)
+        return argparse.Namespace(main=main), []
+
+    def invoke(self, ctx, *args):
+        if ctx.obj is None and args:
+            ctx.obj = args[0]
+        try:
+            return self.click_command.invoke(ctx)
+        except click.UsageError as usage:
+            usage.show()
+            self.exit(2)
+
+
 def json_action(action):
     a_data = dict(action._get_kwargs())
 
@@ -44,6 +79,10 @@ def json_action(action):
 
     reg = {v:k for k, v in action.container._registries['action'].items()}
     a_data['action'] = reg.get(type(action), type(action).__name__)
+
+
+
+
     if a_data['action'] == 'store' and not a_data.get('metavar'):
         a_data['metavar'] = action.dest.upper()
 
@@ -127,7 +166,7 @@ def get_sub_commands(module):
 
 def add_subparser_modules(parser, module=None, entry_point_name=None):
 
-    subparsers = parser.add_subparsers(title='Commands', metavar='')
+    subparsers = parser.add_subparsers(title='Commands', metavar='', parser_class=click_parser)
 
     if module:  # LOAD sub parsers from module
         for command_module in get_sub_commands(module):
